@@ -1,23 +1,26 @@
-context:
-  name: libass
-  version: "0.17.4"
+{% set name = "libass" %}
+{% set version = "0.17.4" %}
 
 package:
-  name: ${{ name|lower }}
-  version: ${{ version }}
+  name: {{ name }}
+  version: {{ version }}
 
 source:
-  url: https://github.com/libass/libass/releases/download/${{ version }}/libass-${{ version }}.tar.xz
+  url: https://github.com/{{ name }}/{{ name }}/releases/download/{{ version }}/{{ name }}-{{ version }}.tar.xz
   sha256: 78f1179b838d025e9c26e8fef33f8092f65611444ffa1bfc0cfac6a33511a05a
 
 build:
   number: 0
-  skip: win
+  skip: true  # [win]
+  run_exports:
+    - {{ pin_subpackage('libass', max_pin='x.x.x') }}
+  ignore_run_exports:
+    - expat
 
 requirements:
   build:
-    - ${{ compiler('c') }}
-    - ${{ stdlib("c") }}
+    - {{ stdlib("c") }}
+    - {{ compiler('c') }}
     - make
     - autoconf
     - automake
@@ -32,16 +35,10 @@ requirements:
     - expat
     - libiconv
     - harfbuzz
-  run_exports:
-    - ${{ pin_subpackage('libass', upper_bound='x.x.x') }}
-  ignore_run_exports:
-    from_package:
-      - expat
 
-tests:
-  - script:
-      - if: unix
-        then: test -f $PREFIX/lib/libass$SHLIB_EXT
+test:
+  commands:
+    test -f $PREFIX/lib/libass$SHLIB_EXT
 
 about:
   license: ISC
