@@ -1,3 +1,0 @@
-# Required for ffmpeg build, dependencies of which use harfbuzz 10
-harfbuzz:
-  - 10
